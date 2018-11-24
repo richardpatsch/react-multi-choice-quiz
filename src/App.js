@@ -18,30 +18,13 @@ class App extends Component {
     this.setNextQuestion = this.setNextQuestion.bind(this);
     this.setPreviousQuestion = this.setPreviousQuestion.bind(this);
     this.setFinish = this.setFinish.bind(this);
-
   }
 
   initQuestions() {
-    let questions = [];
-    
-    quizQuestions.forEach(question => {
-      questions.push({...question, selectedAnswers:[]});
-    });
-
-    return questions;
+    return this.shuffleQuestions(quizQuestions).map(question => ({...this.shuffleAnswers(question), selectedAnswers: []}));
   } 
 
-  componentWillMount() {
-    const shuffledAnswerOptions = quizQuestions.map(question =>
-      this.shuffleArray(question.answers)
-    );
-    this.setState({
-      question: quizQuestions[0].question,
-      answerOptions: shuffledAnswerOptions[0]
-    });
-  }
-
-  shuffleArray(array) {
+  shuffleQuestions (array) {
     var currentIndex = array.length,
       temporaryValue,
       randomIndex;
@@ -65,6 +48,35 @@ class App extends Component {
     this.setState({
       questions: this.updateSelectedAnswers(questionId, answerId),
     });
+  }
+
+  shuffleAnswers(question) {
+    var currentIndex = question.answers.length,
+      temp, 
+      randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      temp = question.answers[currentIndex];
+      question.answers[currentIndex] = question.answers[randomIndex];
+      question.answers[randomIndex] = temp;
+
+      const currentCorrect = question.correctAnswers.includes(currentIndex);
+      const randomCorrect = question.correctAnswers.includes(randomIndex);
+
+      if (currentCorrect !== randomCorrect) {
+        if (currentCorrect && !randomCorrect) {
+          question.correctAnswers = question.correctAnswers.filter(answer => (answer !== currentIndex)).concat(randomIndex);
+        } else {
+          question.correctAnswers = question.correctAnswers.filter(answer => (answer !== randomIndex)).concat(currentIndex);
+        }
+      }
+    }
+    
+    console.log(question);
+    return question;
   }
 
   updateSelectedAnswers(qId, aId) {
