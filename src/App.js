@@ -11,11 +11,14 @@ class App extends Component {
     this.state = {
       questions: this.initQuestions(),
       currentQuestion: 0,
+      finished: false,
     };
 
     this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
     this.setNextQuestion = this.setNextQuestion.bind(this);
     this.setPreviousQuestion = this.setPreviousQuestion.bind(this);
+    this.setFinish = this.setFinish.bind(this);
+
   }
 
   initQuestions() {
@@ -92,21 +95,8 @@ class App extends Component {
     }
   }
 
-  getResults() {
-    const answersCount = this.state.answersCount;
-    const answersCountKeys = Object.keys(answersCount);
-    const answersCountValues = answersCountKeys.map(key => answersCount[key]);
-    const maxAnswerCount = Math.max.apply(null, answersCountValues);
-
-    return answersCountKeys.filter(key => answersCount[key] === maxAnswerCount);
-  }
-
-  setResults(result) {
-    if (result.length === 1) {
-      this.setState({ result: result[0] });
-    } else {
-      this.setState({ result: 'Undetermined' });
-    }
+  setFinish() {
+    this.setState({finished: true});
   }
 
   renderQuiz() {
@@ -120,15 +110,18 @@ class App extends Component {
           questionId={question.id}
           question={question.question}
           onAnswerSelected={this.handleAnswerSelected}
+          result={false}
+          correctAnswers={question.correctAnswers}
         />
         <button onClick={this.setNextQuestion}>Next</button>
         <button onClick={this.setPreviousQuestion}>Previous</button>
+        <button onClick={this.setFinish}>Finish</button>
       </div>
     );
   }
 
   renderResult() {
-    return <Result quizResult={this.state.result} />;
+    return <Result questions={this.state.questions} />;
   }
 
   render() {
@@ -137,7 +130,7 @@ class App extends Component {
         <div className="App-header">
           <h2>ELAM Quiz</h2>
         </div>
-        {this.state.result ? this.renderResult() : this.renderQuiz()}
+        {this.state.finished ? this.renderResult() : this.renderQuiz()}
       </div>
     );
   }

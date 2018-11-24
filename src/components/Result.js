@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
+import Quiz from './Quiz';
 
 const Result = (props) => {
   return (
@@ -13,15 +14,27 @@ const Result = (props) => {
       transitionAppear
       transitionAppearTimeout={500}
     >
-      <div>
-        You prefer <strong>{props.quizResult}</strong>!
-      </div>
+      {
+        props.questions.map(question => (
+          <Quiz
+            key={question.id+"Q"}
+            questionTotal={props.questions.length}
+            answerOptions={question.answers}
+            selectedAnswers={question.selectedAnswers}
+            questionId={question.id}
+            question={question.question}
+            onAnswerSelected={() => console.log("not changeable in result screen")}
+            result={true}
+            correctAnswers={question.correctAnswers}
+          />
+        ))
+      }
     </CSSTransitionGroup>
   );
 }
 
 Result.propTypes = {
-  quizResult: PropTypes.string.isRequired
+  questions: PropTypes.array.isRequired
 };
 
 export default Result;

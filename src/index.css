@@ -67,18 +67,27 @@ body {
   border-top: 1px solid #eee;
 }
 
+.correctAnswer {
+  color: green;
+}
+
+.wrongAnswer {
+  color: red;
+}
+
 .answerOption:hover {
   background-color: #eefbfe;
 }
 
-.radioCustomButton {
+.radioCustomButton, .radioResultButton {
   position: absolute;
   width: auto;
   opacity: 0;
 }
 
 .radioCustomButton,
-.radioCustomLabel {
+.radioCustomLabel,
+.radioResultButton {
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
@@ -93,7 +102,16 @@ body {
   line-height: 1.5;
 }
 
-.radioCustomButton ~ .radioCustomLabel:before {
+.resultStatusIcon {
+  color: #ff1493;
+  position: relative;
+  top: 40px;
+  left: 10px;
+  content: '';
+  vertical-align: middle;
+}
+
+.radioCustomButton ~ .radioCustomLabel:before, .radioResultButton ~ .radioCustomLabel:before {
   position: absolute;
   top: 20px;
   left: 38px;
@@ -113,6 +131,13 @@ body {
   background: #8bc53f url(./svg/icon-check.svg) no-repeat;
   background-size: 27px;
   border-color: #8bc53f;
+}
+
+.radioResultButton:checked ~ .radioCustomLabel:before {
+  content: '';
+  background: #929fad url(./svg/icon-check.svg) no-repeat;
+  background-size: 27px;
+  border-color: #929fad;
 }
 
 /* Animation */

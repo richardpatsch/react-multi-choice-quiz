@@ -7,15 +7,18 @@ import AnswerOption from '../components/AnswerOption';
 
 const Quiz = (props) => {
   const renderAnswerOptions = (key) => {
+    console.log(props);
     const answerId = props.answerOptions.findIndex(answer => answer === key);
     return (
       <AnswerOption
-        key={key}
+        key={answerId + "A" + props.questionId}
         answer={key}
         checked={props.selectedAnswers.includes(answerId)}
         answerId={answerId}
         questionId={props.questionId}
         onAnswerSelected={props.onAnswerSelected}
+        result={props.result}
+        correct={props.correctAnswers.includes(answerId)}
       />
     );
   }
@@ -32,7 +35,7 @@ const Quiz = (props) => {
       transitionAppearTimeout={500}
     >
       <div key={props.questionId}>
-        <QuestionCount counter={props.questionId + 1} total={props.questionTotal} />
+        {!props.result ? <QuestionCount counter={props.questionId + 1} total={props.questionTotal} /> : ""}
         <Question content={props.question} />
         <ul className="answerOptions">
           {props.answerOptions.map(renderAnswerOptions)}
@@ -48,7 +51,9 @@ Quiz.propTypes = {
   question: PropTypes.string.isRequired,
   questionId: PropTypes.number.isRequired,
   questionTotal: PropTypes.number.isRequired,
-  onAnswerSelected: PropTypes.func.isRequired
+  onAnswerSelected: PropTypes.func.isRequired,
+  result: PropTypes.bool.isRequired,
+  correctAnswers: PropTypes.array.isRequired,
 };
 
 export default Quiz;
