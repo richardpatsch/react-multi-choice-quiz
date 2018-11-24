@@ -65,6 +65,7 @@ body {
 /* AnswerOption Component */
 .answerOption {
   border-top: 1px solid #eee;
+  position: relative;
 }
 
 .correctAnswer {
@@ -103,10 +104,10 @@ body {
 }
 
 .resultStatusIcon {
-  color: #ff1493;
-  position: relative;
-  top: 40px;
-  left: 10px;
+  display: inline-block;
+  position: absolute;
+  top: 20px;
+  left: 7px;
   content: '';
   vertical-align: middle;
 }
