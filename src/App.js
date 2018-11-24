@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import quizQuestions from './api/quizQuestions';
 import Quiz from './components/Quiz';
 import Result from './components/Result';
-import logo from './svg/logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -10,21 +9,24 @@ class App extends Component {
     super(props);
 
     this.state = {
-      counter: 0,
-      questionId: 1,
-      question: '',
-      answerOptions: [],
-      answer: '',
-      answersCount: {
-        Nintendo: 0,
-        Microsoft: 0,
-        Sony: 0
-      },
-      result: ''
+      questions: this.initQuestions(),
+      currentQuestion: 0,
     };
 
     this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
+    this.setNextQuestion = this.setNextQuestion.bind(this);
+    this.setPreviousQuestion = this.setPreviousQuestion.bind(this);
   }
+
+  initQuestions() {
+    let questions = [];
+    
+    quizQuestions.forEach(question => {
+      questions.push({...question, selectedAnswers:[]});
+    });
+
+    return questions;
+  } 
 
   componentWillMount() {
     const shuffledAnswerOptions = quizQuestions.map(question =>
@@ -56,37 +58,38 @@ class App extends Component {
     return array;
   }
 
-  handleAnswerSelected(event) {
-    this.setUserAnswer(event.currentTarget.value);
-
-    if (this.state.questionId < quizQuestions.length) {
-      setTimeout(() => this.setNextQuestion(), 300);
-    } else {
-      setTimeout(() => this.setResults(this.getResults()), 300);
-    }
+  handleAnswerSelected(questionId, answerId) {
+    this.setState({
+      questions: this.updateSelectedAnswers(questionId, answerId),
+    });
   }
 
-  setUserAnswer(answer) {
-    this.setState((state, props) => ({
-      answersCount: {
-        ...state.answersCount,
-        [answer]: state.answersCount[answer] + 1
-      },
-      answer: answer
-    }));
+  updateSelectedAnswers(qId, aId) {
+    return this.state.questions.map(question => {
+      if (question.id === qId) {
+        let newSelection;
+        //remove if existent:
+        if (question.selectedAnswers.indexOf(aId) >= 0) {
+          newSelection = question.selectedAnswers.filter(item => item !== aId);
+        } else { //push if non-existent
+          newSelection = question.selectedAnswers.concat(aId);
+        }
+        question.selectedAnswers = newSelection;
+      } 
+      return question;
+    });
   }
 
   setNextQuestion() {
-    const counter = this.state.counter + 1;
-    const questionId = this.state.questionId + 1;
+    if (this.state.questions.length -1 !== this.state.currentQuestion) {
+      this.setState({currentQuestion: this.state.currentQuestion+1});
+    }
+  }
 
-    this.setState({
-      counter: counter,
-      questionId: questionId,
-      question: quizQuestions[counter].question,
-      answerOptions: quizQuestions[counter].answers,
-      answer: ''
-    });
+  setPreviousQuestion() {
+    if (this.state.currentQuestion > 0) {
+      this.setState({currentQuestion: this.state.currentQuestion-1});
+    }
   }
 
   getResults() {
@@ -107,15 +110,20 @@ class App extends Component {
   }
 
   renderQuiz() {
+    const question = this.state.questions[this.state.currentQuestion];
     return (
-      <Quiz
-        answer={this.state.answer}
-        answerOptions={this.state.answerOptions}
-        questionId={this.state.questionId}
-        question={this.state.question}
-        questionTotal={quizQuestions.length}
-        onAnswerSelected={this.handleAnswerSelected}
-      />
+      <div>
+        <Quiz
+          questionTotal = {this.state.questions.length}
+          answerOptions={question.answers}
+          selectedAnswers={question.selectedAnswers}
+          questionId={question.id}
+          question={question.question}
+          onAnswerSelected={this.handleAnswerSelected}
+        />
+        <button onClick={this.setNextQuestion}>Next</button>
+        <button onClick={this.setPreviousQuestion}>Previous</button>
+      </div>
     );
   }
 
@@ -127,8 +135,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>React Quiz</h2>
+          <h2>ELAM Quiz</h2>
         </div>
         {this.state.result ? this.renderResult() : this.renderQuiz()}
       </div>
