@@ -4,23 +4,21 @@ import { GoCheck, GoX, GoArrowRight } from 'react-icons/go';
 
 const AnswerOption = (props) => {
   let classes = "answerOption";
+  let icon = '';
 
   if (props.result) {
-    if (props.correct && !props.checked) {
-      classes += " wrongAnswer";
-    } else if (props.correct) {
-      classes += " correctAnswer"
+    if (props.correct && props.checked) {
+      icon = <GoCheck className="resultStatusIcon" size={30} color="green" />;
+    } else if (props.correct && !props.checked) {
+      icon = <GoArrowRight className="resultStatusIcon" size={30} color="blue"/>
+    } else if (!props.correct && props.checked) {
+      icon = <GoX className="resultStatusIcon" size={30} color="red"/>;
     }
- 
-    console.log(classes);
-  }
-  //      <GoArrowRight />
-  //<GoCheck />
+   }
+
   return (
     <li className={classes}>
-
-      <GoX className="resultStatusIcon"/>
-
+      {props.result ? icon : ''}
       <input
         type="checkbox"
         className={props.result ? "radioResultButton" : "radioCustomButton"}
