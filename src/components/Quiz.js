@@ -6,18 +6,20 @@ import QuestionCount from '../components/QuestionCount';
 import AnswerOption from '../components/AnswerOption';
 
 const Quiz = (props) => {
-  function renderAnswerOptions(key) {
+  const renderAnswerOptions = (key) => {
+    const answerId = props.answerOptions.findIndex(answer => answer === key);
     return (
       <AnswerOption
-        key={key.content}
-        answerContent={key.content}
-        answerType={key.type}
-        answer={props.answer}
+        key={key}
+        answer={key}
+        checked={props.selectedAnswers.includes(answerId)}
+        answerId={answerId}
         questionId={props.questionId}
         onAnswerSelected={props.onAnswerSelected}
       />
     );
   }
+
 
   return (
     <CSSTransitionGroup
@@ -30,7 +32,7 @@ const Quiz = (props) => {
       transitionAppearTimeout={500}
     >
       <div key={props.questionId}>
-        <QuestionCount counter={props.questionId} total={props.questionTotal} />
+        <QuestionCount counter={props.questionId + 1} total={props.questionTotal} />
         <Question content={props.question} />
         <ul className="answerOptions">
           {props.answerOptions.map(renderAnswerOptions)}
@@ -41,7 +43,7 @@ const Quiz = (props) => {
 }
 
 Quiz.propTypes = {
-  answer: PropTypes.string.isRequired,
+  selectedAnswers: PropTypes.array.isRequired,
   answerOptions: PropTypes.array.isRequired,
   question: PropTypes.string.isRequired,
   questionId: PropTypes.number.isRequired,

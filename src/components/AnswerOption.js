@@ -5,27 +5,25 @@ const AnswerOption = (props) => {
   return (
     <li className="answerOption">
       <input
-        type="radio"
+        type="checkbox"
         className="radioCustomButton"
-        name="radioGroup"
-        checked={props.answerType === props.answer}
-        id={props.answerType}
-        value={props.answerType}
-        disabled={props.answer}
-        onChange={props.onAnswerSelected}
+        id={props.answerId}
+        checked={props.checked}
+        value={props.answer}
+        onChange={() => {props.onAnswerSelected(props.questionId, props.answerId)}}
       />
-      <label className="radioCustomLabel" htmlFor={props.answerType}>
-        {props.answerContent}
+      <label className="radioCustomLabel" htmlFor={props.answerId}>
+        {props.answer}
       </label>
     </li>
   );
 }
 
 AnswerOption.propTypes = {
-  answerType: PropTypes.string.isRequired,
-  answerContent: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
-  onAnswerSelected: PropTypes.func.isRequired
+  checked: PropTypes.bool.isRequired,
+  onAnswerSelected: PropTypes.func.isRequired,
+  answerId: PropTypes.number.isRequired,
+  questionId: PropTypes.number.isRequired,
 };
 
 export default AnswerOption;
