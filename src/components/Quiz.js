@@ -4,10 +4,11 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import Question from '../components/Question';
 import QuestionCount from '../components/QuestionCount';
 import AnswerOption from '../components/AnswerOption';
+import Button from '@material-ui/core/Button';
+
 
 const Quiz = (props) => {
   const renderAnswerOptions = (key) => {
-    console.log(props);
     const answerId = props.answerOptions.findIndex(answer => answer === key);
     return (
       <AnswerOption
@@ -41,6 +42,19 @@ const Quiz = (props) => {
           {props.answerOptions.map(renderAnswerOptions)}
         </ul>
       </div>
+      {
+        (!props.result) ?
+        <div id="test">
+          <div className="split">
+            <Button variant="contained" color="primary" onClick={() => props.onSetPreviousQuestion()} fullWidth>Previous</Button>
+          </div>
+          <div className="split">
+            <Button variant="contained" color="primary" onClick={() => props.onSetNextQuestion()} fullWidth>Next</Button>
+          </div>
+        </div>
+        : ''
+      }
+
     </CSSTransitionGroup>
   );
 }

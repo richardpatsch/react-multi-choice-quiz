@@ -2,8 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
 import Quiz from './Quiz';
+import { arraysEqual } from '../misc/Helper'
 
 const Result = (props) => {
+  console.log(props.questions[0].correctAnswers);
+  console.log(props.questions[0].selectedAnswers);
+  console.log(arraysEqual(props.questions[0].correctAnswers, props.questions[0].selectedAnswers));
   return (
     <CSSTransitionGroup
       className="container result"
@@ -14,6 +18,7 @@ const Result = (props) => {
       transitionAppear
       transitionAppearTimeout={500}
     >
+      <h4>{`${props.questions.filter(question => arraysEqual(question.selectedAnswers, question.correctAnswers)).length} of ${props.questions.length} questions are correct.`}</h4>
       {
         props.questions.map(question => (
           <Quiz

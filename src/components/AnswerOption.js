@@ -1,24 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GoCheck, GoX, GoArrowRight } from 'react-icons/go';
+import Media from "react-media";
 
 const AnswerOption = (props) => {
   let classes = "answerOption";
   let icon = '';
+  let mobileIcon = '';
 
   if (props.result) {
     if (props.correct && props.checked) {
       icon = <GoCheck className="resultStatusIcon" size={30} color="green" />;
+      mobileIcon = <GoCheck className="resultStatusIcon" size={20} color="green" />;
     } else if (props.correct && !props.checked) {
-      icon = <GoArrowRight className="resultStatusIcon" size={30} color="blue"/>
+      icon = <GoArrowRight className="resultStatusIcon" size={30} color="blue"/>;
+      mobileIcon = <GoArrowRight className="resultStatusIcon" size={20} color="blue"/>;
     } else if (!props.correct && props.checked) {
       icon = <GoX className="resultStatusIcon" size={30} color="red"/>;
+      mobileIcon = <GoX className="resultStatusIcon" size={20} color="red"/>;
     }
    }
 
   return (
     <li className={classes}>
-      {props.result ? icon : ''}
+      <Media query={{ minWidth: 769 }}>
+          {matches =>
+            matches ? (
+              icon
+            ) : (
+              mobileIcon
+            )
+          }
+      </Media>
       <input
         type="checkbox"
         className={props.result ? "radioResultButton" : "radioCustomButton"}
